@@ -1,0 +1,4 @@
+\contentsline {chapter}{\numberline {1}Aesop Fables}{2}
+\contentsline {section}{\numberline {1.1}The \textsl {Ant} and the \textsl {Dove}}{2}
+\contentsline {section}{\numberline {1.2}The {\it Dog}\/ in the Manger}{2}
+\contentsline {chapter}{\numberline {2}The \textsc {Eagle} and the Arrow}{3}
