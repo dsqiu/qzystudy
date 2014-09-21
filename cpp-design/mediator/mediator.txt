@@ -1,0 +1,203 @@
+Mediator中介者模式
+作用：用一个中介对象来封装一系列的对象交互。中介者使各对象不需要显式地相互引用，从而使其耦合松散，而且可以独立地改变它们之间的交互。
+Colleage抽象同事类，而ConcreteColleage是具体同时类，每个具体同事只知道自己的行为，而不了解其他同事类的情况，但它们却都认识中介者对象，Mediator是抽象中介者，定义了同事对象到中介者对象的接口，ConcreteMediator是具体中介者对象，实现抽象类的方法，它需要知道所有具体同事类，并从具体同事接受消息，向具体同事对象发出命令。
+
+Colleage类，抽象同事类
+
+Mediator，抽象中介者类
+
+说明：
+
+1. Mediator 模式中，每个Colleague 维护一个 Mediator，当要进行通信时，每个具体的 Colleague 直接向ConcreteMediator 发信息，至于信息发到哪里，则由 ConcreteMediator 来决定。
+
+2. ConcreteColleagueA 和 ConcreteColleagueB 不必维护对各自的引用，甚至它们也不知道各个的存在。
+
+3. 优点是，各个 Colleague 减少了耦合。
+
+4. 缺点是，由于 Mediator 控制了集中化，于是就把 Colleague 之间的交互复杂性变为了中介者的复杂性，也就是中介者会变的比任何一个 Colleague 都复杂。
+
+中介者模式很容易在系统中应用，也很容易在系统中误用。当系统中出现了“多对多”交互复杂的对象群时，不要急于使用中介者模式，而要先反思你的系统在设计上是不是合理。
+
+Mediator的出现减少了各个Colleage的耦合，使得可以独立地改变和复用各个Colleage类和Mediator;
+由于把对象如何协作进行了抽象，将中介作为一个独立的概念并将其封装在一个对象中，这样关注的对象就从对象各自本身的行为转移到它们之间的交互上来，也就是站在一个更宏观的角度去看待系统。
+
+由于ConcreteMediator控制了集中化，于是就把交互复杂性变为了中介者的复杂性，这使得中介者会变得比任何一个ConcreteColleage都复杂。
+
+中介者模式的优点来自集中控制，其缺点也是它。
+
+中介者模式一般应用于一组对象以定义良好但是复杂的方式进行通信的场合。
+
+#ifndef _MEDIATOR_H_
+#define _MEDIATOR_H_
+
+#include <string>
+
+using namespace std;
+
+class Mediator;
+
+class Colleage
+{
+public:
+    virtual ~Colleage();
+    virtual void SetMediator(Mediator*);
+    virtual void SendMsg(string) = 0;
+    virtual void GetMsg(string) = 0;
+protected:
+    Colleage(Mediator*);
+    Mediator* _mediator;
+private:
+    
+};
+
+class ConcreteColleageA : public Colleage
+{
+public:
+    ~ConcreteColleageA();
+    ConcreteColleageA(Mediator*);
+    virtual void SendMsg(string msg);
+    virtual void GetMsg(string);
+protected:
+private:
+};
+
+class ConcreteColleageB : public Colleage
+{
+public:
+    ~ConcreteColleageB();
+    ConcreteColleageB(Mediator*);
+    virtual void SendMsg(string msg);
+    virtual void GetMsg(string);
+protected:
+private:
+};
+
+class Mediator
+{
+public:
+    virtual ~Mediator();
+    virtual void SendMsg(string,Colleage*) = 0;
+protected:
+    Mediator();
+private:
+};
+
+class ConcreteMediator : public Mediator
+{
+public:
+    ConcreteMediator();
+    ~ConcreteMediator();
+    void SetColleageA(Colleage*);
+    void SetColleageB(Colleage*);
+    virtual void SendMsg(string msg,Colleage*);
+protected:
+private:
+    Colleage* m_ColleageA;
+    Colleage* m_ColleageB;
+};
+#endif
+#include "Mediator.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+Colleage::Colleage(Mediator* pMediator)
+{
+    this->_mediator = pMediator;
+}
+
+Colleage::~Colleage()
+{}
+
+void Colleage::SetMediator(Mediator* pMediator)
+{
+    this->_mediator = pMediator;
+}
+
+ConcreteColleageA::ConcreteColleageA(Mediator* pMediator) : Colleage(pMediator)
+{
+}
+
+ConcreteColleageA::~ConcreteColleageA()
+{
+}
+
+void ConcreteColleageA::SendMsg(string msg)
+{
+    this->_mediator->SendMsg(msg,this);
+}
+
+void ConcreteColleageA::GetMsg(string msg)
+{
+    cout << "ConcreteColleageA Receive:"<< msg << endl;
+}
+
+ConcreteColleageB::ConcreteColleageB(Mediator* pMediator) : Colleage(pMediator)
+{
+}
+
+ConcreteColleageB::~ConcreteColleageB()
+{
+}
+
+void ConcreteColleageB::SendMsg(string msg)
+{
+    this->_mediator->SendMsg(msg,this);
+}
+
+void ConcreteColleageB::GetMsg(string msg)
+{
+    cout << "ConcreteColleageB Receive:" << msg << endl;
+}
+
+Mediator::Mediator()
+{}
+
+Mediator::~Mediator()
+{}
+
+ConcreteMediator::ConcreteMediator()
+{}
+
+ConcreteMediator::~ConcreteMediator()
+{}
+
+void ConcreteMediator::SetColleageA(Colleage* p)
+{
+    this->m_ColleageA = p;
+}
+
+void ConcreteMediator::SetColleageB(Colleage* p)
+{
+    this->m_ColleageB = p;
+}
+
+void ConcreteMediator::SendMsg(string msg,Colleage* p)
+{
+    if(p == this->m_ColleageA)
+    {
+        this->m_ColleageB->GetMsg(msg);
+    }
+    else if(p == this->m_ColleageB)
+    {
+        this->m_ColleageA->GetMsg(msg);
+    }
+}
+
+#include "Mediator.h"
+
+int main()
+{
+    ConcreteMediator* pMediator = new ConcreteMediator();
+
+    Colleage* p1 = new ConcreteColleageA(pMediator);
+    Colleage* p2 = new ConcreteColleageB(pMediator);
+
+    pMediator->SetColleageA(p1);
+    pMediator->SetColleageB(p2);
+
+    p1->SendMsg("xxx");
+    p2->SendMsg("ooo");
+    return 0;
+}
