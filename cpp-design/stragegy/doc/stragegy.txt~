@@ -1,0 +1,146 @@
+Strategy策略模式
+作用：定义了算法家族，分别封装起来，让他们之间可以互相替换，此模式让算法的变化，不会影响到使用算法的客户。
+
+
+
+Strategy模式将逻辑（算法）封装到一个类（Context）里面，通过组合的方式将具体算法的实现在组合对象中实现，再通过委托的方式将抽象接口的实现委托给组合对象实现
+
+将算法的逻辑抽象接口（DoAction）封装到一个类中（Context），再通过委托的方式将具体的算法实现委托给具体的Strategy类来实现（ConcreteStrategeA类）
+
+Stragegy类，定义所有支持的算法的公共接口
+ConcreteStrategy，封装了具体的算法或行为，继承于Strategy
+Context，用一个ConcreteStrategy来配置，维护一个对Strategy对象的引用
+
+策略模式是一种定义一系列算法的方法，从概念上来看，所有这些算法完成的都是相同的工作，只是实现不同，它可以以相同的方式调用所有的算法，减少了各种算法类于使用算法类之间的耦合。
+
+策略模式的Strategy类层次为Context定义了一系列的可供重用的算法或行为。继承有助于析取出这些算法中的公共功能。
+
+策略模式的优点是简化了单元测试，因为每个算法都有自己的类，可以通过自己的接口单独测试。
+
+策略模式就是用来封装算法的，但在实践中，我们发现可以用它来封装几乎任何类型的规则，只要在分析过程中听到需要在不同时间应用不同的业务规则，就可以考虑使用策略模式处理这种变化的可能性。
+
+在基本的策略模式中，选择所用具体实现的职责由客户端对象承担，并转给策略模式的Context对象。这本身并没有解除客户端需要选择判断的压力。
+
+
+
+#ifndef _STRATEGY_H_
+#define _STRATEGY_H_
+
+class Strategy
+{
+public:
+    ~Strategy();
+    virtual void AlgrithmInterface()=0;
+protected:
+    Strategy();
+private:
+};
+
+class ConcreteStrategyA : public Strategy
+{
+public:
+    ConcreteStrategyA();
+    ~ConcreteStrategyA();
+    virtual void AlgrithmInterface();
+protected:
+private:
+};
+
+class ConcreteStrategyB : public Strategy
+{
+public:
+    ConcreteStrategyB();
+    ~ConcreteStrategyB();
+    virtual void AlgrithmInterface();
+protected:
+private:
+};
+
+/*这个类是Strategy模式的关键，
+  也是Strategy模式和Template模式的根本区别所在。
+  *Strategy通过“组合”（委托）方式实现算法（实现）的异构，
+  而Template模式则采取的是继承的方式
+  这两个模式的区别也是继承和组合两种实现接口重用的方式的区别
+*/
+class Context
+{
+public:
+    Context(Strategy*);
+    ~Context();
+    void DoAction();
+private:
+    Strategy* _strategy;
+};
+#endif
+
+#include "Strategy.h"
+#include "iostream"
+
+using namespace std;
+
+Strategy::Strategy()
+{}
+
+Strategy::~Strategy()
+{}
+
+ConcreteStrategyA::ConcreteStrategyA()
+{}
+
+ConcreteStrategyA::~ConcreteStrategyA()
+{}
+
+void ConcreteStrategyA::AlgrithmInterface()
+{
+    cout << "ConcreteStrategyA::AlgrithmInterface" << endl;
+}
+
+ConcreteStrategyB::ConcreteStrategyB()
+{}
+
+ConcreteStrategyB::~ConcreteStrategyB()
+{}
+
+void ConcreteStrategyB::AlgrithmInterface()
+{
+    cout << "ConcreteStrategyB::AlgrithmInterface" << endl;
+}
+
+Context::Context(Strategy* strategy)
+{
+    this->_strategy = strategy;
+}
+
+Context::~Context()
+{
+    delete this->_strategy;
+}
+
+void Context::DoAction()
+{
+    this->_strategy->AlgrithmInterface();
+}
+
+
+
+#include "Strategy.h"
+
+int main()
+{
+    /*
+    Strategy模式和Template模式实际是实现一个抽象接口的两种方式：继承和组合之间的区别。
+    要实现一个抽象接口，继承是一种方式：我们将抽象接口声明在基类中，将具体的实现放在具体子类中。
+    组合（委托）是另外一种方式：我们将接口的实现放在被组合对象中，将抽象接口放在组合类中。
+    这两种方式各有优缺点
+    */
+    //策略A与B可替换
+    Strategy* pStr = new ConcreteStrategyA();
+    Context* pcon = new Context(pStr);
+    pcon->DoAction();
+
+    pStr = new ConcreteStrategyB();
+    pcon = new Context(pStr);
+    pcon->DoAction();
+
+    return 0;
+}

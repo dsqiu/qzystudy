@@ -1,0 +1,401 @@
+Flyweight享元模式
+
+作用：运用共享技术有效地支持大量细粒度的对象。
+
+内部状态intrinsic和外部状态extrinsic：
+
+1）Flyweight模式中，最重要的是将对象分解成intrinsic和extrinsic两部分。
+
+2）内部状态：在享元对象内部并且不会随环境改变而改变的共享部分，可以称为是享元对象的内部状态
+
+3）外部状态：而随环境改变而改变的，取决于应用环境，或是实时数据，这些不可以共享的东西就是外部状态了。
+
+4）内部状态和外部状态之间的区别：
+　　在Flyweight模式应用中，通常修改的是外部状态属性，而内部状态属性一般都是用于参考或计算时引用。
+Flyweight执行时所需的状态必定是内部的或外部的。内部状态存储于ConcreteFlyweight对象之中；而外部状态则由Client对象存储或计算。当用户调用Flyweight对象的操作时，将该状态传递给它。
+
+以文字处理软件为例：
+
+　　内部状态存储于flyweight中，它包含了独立于flyweight场景的信息，这些信息使得flyweight可以被共享。如字符代码，字符大小……
+
+　　外部状态取决于flyweight场景，并根据场景而变化，因此不可共享。用户对象负责在必要的时候将外部状态传递给flyweight，如字符位置，字符颜色……
+
+
+解析：
+Flyweight：享元类的基类，定义一个接口，通过这个接口Flyweight可以接受并作用于外部状态。
+
+ConcreteFlyweight：实现Flyweight接口， 并为内部状态（ 如果有的话） 增加存储空间。ConcreteFlyweight对象必须是可共享的。它所存储的状态必须是内部的（intrinsic）；即，它必须独立于ConcreteFlyweight对象的场景。
+
+UnsharedConcreteFlyweight：并非所有的Flyweight子类都需要被共享。Flyweight接口使共享成为可能，但它并不强制共享。在Flyweight对象结构的某些层次，UnsharedConcreteFlyweight对象通常将ConcreteFlyweight对象作为子节点。
+
+FlyweightFactory：
+
+1） 创建并管理Flyweight对象。
+
+2）确保合理地共享Flyweight。当用户请求一个Flyweight时，FlyweightFactory对象提供一个已创建的实例或者创建一个（如果不存在的话）
+
+Client
+1）维持一个对Flyweight的引用。
+
+2）计算或存储一个（多个）Flyweight的外部状态。
+
+分析：
+ 　　享元模式可以避免大量非常相似类的开销。在程序设计中，有时需要生成大量细粒度的类实例来表示数据。如果能发现这些实例数据除了几个参数外基本都是相同的。有时就能够大幅度地减少实例化的类的数量。如果能把那些参数移到类实例的外面，在方法调用时将它们传递进来，就可以通过共享大幅度地减少单个实例的数目。
+
+　　比如在文档编辑器的设计过程中，我们如果为没有字母创建一个对象的话，系统可能会因为大量的对象而造成存储开销的浪费。例如一个字母“a”在文档中出现了100000次，而实际上我们可以让这一万个字母“a”共享一个对象，当然因为在不同的位置可能字母“a”有不同的显示效果（例如字体和大小等设置不同），在这种情况我们可以为将对象的状态分为“外部状态”和“内部状态”，将可以被共享（不会变化）的状态作为内部状态存储在对象中，而外部对象（例如上面提到的字体、大小等）我们可以在适当的时候将外部对象最为参数传递给对象（例如在显示的时候，将字体、大小等信息传递给对象）。
+
+　　Flyweight的内部状态是用来共享的，Flyweightfactory负责维护一个Flyweight池(存放内部状态的对象),当客户端请求一个共享Flyweight时,这个factory首先搜索池中是否已经有可适用的,如果有,factory只是简单返回送出这个对象,否则,创建一个新的对象,加入到池中,再返回送出这个对象.池为重复或可共享的对象、属性设置一个缓冲，称为内部状态。这些内部状态一般情况下都是不可修改的，也就是在第一个对象、属性被创建后，就不会去修改了(否则就没意义了)。
+
+　　Flyweight 对对象的内部状态进行共享，只为每种内部状态创建一个实例,对内部状态使用了单例模式。
+
+　　用户不应直接对ConcreteFlyweight类进行实例化，而只能从FlyweightFactory对象得到ConcreteFlyweight对象，这可以保证对它们适当地进行共享。
+
+　　存储节约由以下几个因素决定：
+　　1） 因为共享，实例总数减少的数目
+　　2） 对象内部状态的平均数目
+　　3） 外部状态是计算的还是存储的
+
+实现要点
+1）享元工厂维护一张享元实例表。
+
+2）享元不可共享的状态需要在外部维护。即删除外部状态：该模式的可用性在很大程度上取决于是否容易识别外部状态并将它从共享对象中删除。
+
+3）按照需求可以对享元角色进行抽象。
+
+4）管理共享对象：引用计数和垃圾回收……
+
+何时采用
+1）如果一个应用程序使用了大量的对象，而大量的这些对象造成了很大的存储开销时就应该考虑使用；
+
+2）还有就是对象的大多数状态可变为外部状态，如果删除对象的外部状态，那么可以用相对较少的共享对象取代很多组对象，此时可以考虑所使用享元模式。
+
+3）系统中有大量耗费了大量内存的细粒度对象，并且对外界来说这些对没有任何差别的（或者说经过改造后可以是没有差别的）。
+
+　　在文档编辑器例子中如果一个字符对应一个对象，那么一篇文档所要容纳的对象将是非常的庞大耗费大量的内存。而实际组成文档的字符是有限的，是由这些字符不同的组合和排列得到的。所以需要共享，将基本的字符进行共享，将使得字符对象变得有限。
+
+
+#ifndef _FLYWEIGHT_H_
+#define _FLYWEIGHT_H_
+
+#include <string>
+#include <vector>
+
+using namespace std;
+
+//基类，定义操作接口Operation
+class Flyweight
+{
+public:
+    //操作外部状态extrinsicState
+    virtual void Operation(const string& extrinsicState)=0;
+    string GetIntrinsicState();
+    virtual ~Flyweight();
+protected:
+    Flyweight(string intrinsicState);
+private:
+    //内部状态，也可以放在ConcreteFlyweight中
+    string _intrinsicState;
+};
+
+class ConcreteFlyweight:public Flyweight
+{
+public:
+    //实现接口函数
+    virtual void Operation(const string& extrinsicState);
+    ConcreteFlyweight(string intrinsicState);
+    ~ConcreteFlyweight();
+};
+
+class UnsharedConcreteFlyweight:public Flyweight
+{
+public:
+    virtual void Operation(const string& extrinsicState);
+    UnsharedConcreteFlyweight(string intrinsicState);
+    ~UnsharedConcreteFlyweight();
+};
+
+class FlyweightFactory
+{
+public:
+    FlyweightFactory();
+    ~FlyweightFactory();
+    //获得一个请求的Flyweight对象
+    Flyweight* GetFlyweight(string key);
+    //获取容器中存储的对象数量
+    void GetFlyweightCount();
+protected:
+private:
+    //保存内部状态对象的容器
+    vector<Flyweight*> m_vecFly;
+};
+#endif
+
+
+#include "Flyweight.h"
+#include <iostream>
+
+using namespace std;
+
+Flyweight::Flyweight(string intrinsicState)
+{
+    this->_intrinsicState = intrinsicState;
+}
+
+Flyweight::~Flyweight()
+{}
+
+string Flyweight::GetIntrinsicState()
+{
+    return this->_intrinsicState;
+}
+
+ConcreteFlyweight::ConcreteFlyweight(string intrinsicState):Flyweight(intrinsicState)
+{
+}
+
+ConcreteFlyweight::~ConcreteFlyweight()
+{
+}
+
+void ConcreteFlyweight::Operation(const string& extrinsicState)
+{
+    cout << this->GetIntrinsicState() << endl;
+    cout << extrinsicState << endl;
+}
+
+UnsharedConcreteFlyweight::UnsharedConcreteFlyweight(string intrinsicState):Flyweight(intrinsicState)
+{
+}
+
+UnsharedConcreteFlyweight::~UnsharedConcreteFlyweight()
+{
+}
+
+void UnsharedConcreteFlyweight::Operation(const string& extrinsicState)
+{
+    cout << "extrinsicState" << endl;
+}
+
+FlyweightFactory::FlyweightFactory()
+{}
+
+FlyweightFactory::~FlyweightFactory()
+{}
+
+//若该对象已存在，直接返回，否则新建一个对象，存入容器中，再返回
+Flyweight* FlyweightFactory::GetFlyweight(string key)
+{
+    vector<Flyweight*>::iterator iter = this->m_vecFly.begin();
+    for(;iter!= this->m_vecFly.end();iter++)
+    {
+        if((*iter)->GetIntrinsicState() == key)
+        {
+            return *iter;
+        }
+    }
+    Flyweight* fly = new ConcreteFlyweight(key);
+    this->m_vecFly.push_back(fly);
+    return fly;
+}
+
+void FlyweightFactory::GetFlyweightCount()
+{
+    cout << this->m_vecFly.size() << endl;
+}
+
+
+#include "Flyweight.h"
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+    //外部状态extrinsicState
+    string extrinsicState = "ext";
+
+    //工厂对象，工厂对象
+    FlyweightFactory* fc = new FlyweightFactory();
+
+    //向工厂申请一个Flyweight对象，且该对象的内部状态值为“hello”
+    Flyweight* fly = fc->GetFlyweight("hello");
+
+    Flyweight* fly1 = fc->GetFlyweight("hello");
+
+    //应用外部状态
+    fly->Operation(extrinsicState);
+
+    fc->GetFlyweightCount();
+
+    return 0;
+}
+
+
+#ifndef _DOCUMENT_H_
+#define _DOCUMENT_H_
+
+#include <string>
+#include <vector>
+
+using namespace std;
+
+// The 'Flyweight' abstract class
+class character
+{
+public:
+    //析构函数
+    virtual ~character();
+    //应用外部状态
+    virtual void Display(int width,int height,int ascent,int descent,int pointSize)=0;
+    //获取内部状态
+    virtual char GetSymbol()=0;
+protected:
+    /*-----内部状态---------*/
+    char symbol;
+    /*----------------------/
+
+    /*-----外部状态---------*/
+    int width;
+    int height;
+    int ascent;
+    int descent;
+    int pointSize;
+    /*----------------------*/
+    //构造函数
+    character(char c);
+};
+
+//A 'ConcreteFlyweight' class
+class characterA:public character
+{
+public:
+    characterA(char c);
+    ~characterA();
+    virtual void Display(int width,int height,int ascent,int descent,int pointSize);
+    virtual char GetSymbol();
+protected:
+private:
+};
+
+//B 'ConcreteFlyweight' class
+class characterB:public character
+{
+public:
+    characterB(char c);
+    ~characterB();
+    virtual void Display(int width,int height,int ascent,int descent,int pointSize);
+protected:
+private:
+};
+
+//C 'ConcreteFlyweight' class
+class characterC:public character
+{
+public:
+    characterC(char c);
+    ~characterC();
+    virtual void Display(int width,int height,int ascent,int descent,int pointSize);
+protected:
+private:
+};
+
+//D 'ConcreteFlyweight' class
+class characterD:public character
+{
+public:
+    characterD(char c);
+    ~characterD();
+    virtual void Display(int width,int height,int ascent,int descent,int pointSize);
+protected:
+private:
+};
+/*
+...
+*/
+
+//The 'FlyweightFactory' class
+class characterFactory
+{
+public:
+    characterFactory();
+    ~characterFactory();
+    //申请一个character对象
+    character* GetCharacter(char);
+    //获取存储的character*数量
+    vector<character*>::size_type GetCount();
+private:
+    //保存character*的容器，可以换成List等其它容器
+    vector<character*> m_vecCharacter;
+};
+
+#endif
+
+#include "Document.h"
+#include <iostream>
+
+character::character(char c)
+{
+    this->symbol = c;
+}
+
+character::~character()
+{
+}
+
+characterA::characterA(char c):character(c)
+{
+}
+
+characterA::~characterA()
+{
+}
+
+char characterA::GetSymbol()
+{
+    return this->symbol;
+}
+
+void characterA::Display(int width,int height,int ascent,int descent,int pointSize)
+{
+    //接收并作用外部状态
+    this->ascent = ascent;
+    this->descent = descent;
+    this->height = height;
+    this->pointSize = pointSize;
+    this->width = width;
+
+    cout << this->symbol <<" "
+     << this->ascent <<" "
+     << this->descent <<" "
+     << this->height <<" "
+     << this->pointSize <<" "
+     << this->width << endl;
+}
+
+characterFactory::characterFactory()
+{}
+
+characterFactory::~characterFactory()
+{}
+
+character* characterFactory::GetCharacter(char c)
+{
+    vector<character*>::iterator iter = this->m_vecCharacter.begin();
+    for(;iter != this->m_vecCharacter.end();iter++)
+    {
+        if((*iter)->GetSymbol() == c)
+        {
+            return *iter;
+        }
+    }
+    character* pf = new characterA(c);
+    this->m_vecCharacter.push_back(pf);
+    return pf;
+}
+
+vector<character*>::size_type characterFactory::GetCount()
+{
+    return this->m_vecCharacter.size();
+}
+
