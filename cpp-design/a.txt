@@ -1,2 +1,11 @@
-1. adapter
-2. bridge
+1. adapter		适配器模式
+2. bridge		桥接模式
+3. builder		建造者模式
+4. state		状态者模式
+5. proxy		代理模式
+6. command		命令模式
+7. prototy		原型模式
+8. singleton		单例模式
+9. strategy		策略模式
+10. abstractfactory	抽象工厂模式
+11. factory		工厂模式
