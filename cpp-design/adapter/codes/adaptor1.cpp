@@ -6,7 +6,7 @@ class Target {
 public:
   Target ();
   ~Target ();
-  virtual void Request ();
+   virtual void Request ();
 };
 
 /// class Adaptee -
@@ -19,10 +19,14 @@ public:
 };
 
 /// class Adapter -
-class Adapter : public Adaptee, public Target {
+class Adapter : public Target {
+  // Attributes
+private:
+  Adaptee* _adaptee;
   // Operations
 public:
   Adapter ();
+  Adapter (Adaptee *adaptee);
   ~Adapter ();
   virtual void Request ();
 };
@@ -46,19 +50,26 @@ void Adaptee::SpecificRequest()
 {
 	cout << "Adaptee::SpecificRequest()" << endl;
 }
-Adapter::Adapter()
+Adapter::Adapter():_adaptee(new Adaptee)
 {}
+Adapter::Adapter(Adaptee *adaptee)
+{
+	_adaptee = adaptee;
+}
 Adapter::~Adapter()
 {}
 void Adapter::Request()
 {
 	cout << "Adapter::Request()" << endl;
-	SpecificRequest();
+	_adaptee->SpecificRequest();
 	cout << "--------------------------------------" << endl;
 }
 int main(int argc, char *argv[])
 {
-    Target* pTarget = new Adapter();
-	pTarget->Request();
+	Adaptee *ade = new Adaptee();
+    Target* pTarget1 = new Adapter(ade);
+	pTarget1->Request();
+	Target *pTarget2 = new Adapter();
+	pTarget2->Request();
     return 0;
 }

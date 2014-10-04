@@ -1,3 +1,5 @@
+#include "Adapter.h"
+
 /// class Adaptee - 
 class Adaptee {
   // Operations

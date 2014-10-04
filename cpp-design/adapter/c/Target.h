@@ -1,5 +1,3 @@
-#include "Client.h"
-
 /// class Target - 
 class Target {
   // Operations

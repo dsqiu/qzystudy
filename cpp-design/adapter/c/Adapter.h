@@ -1,8 +1,10 @@
-#include "Adaptee.h"
 #include "Target.h"
 
 /// class Adapter - 
-class Adapter : public Adaptee, public Target {
+class Adapter : public Target {
+  // Attributes
+private:
+  Adaptee* _adaptee;
   // Operations
 public:
   Adapter ();
