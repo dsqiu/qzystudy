@@ -1,0 +1,21 @@
+Metadata-Version: 1.1
+Name: wxGlade
+Version: 0.6.8
+Summary: GUI designer written in Python with the popular GUI toolkit wxPython
+Home-page: http://wxglade.sourceforge.net/
+Author: Alberto Griggio
+Author-email: agriggio@users.sourceforge.net
+License: MIT License
+Description: UNKNOWN
+Platform: WIN32
+Platform: OSX
+Platform: POSIX
+Classifier: Development Status :: 4 - Beta
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Natural Language :: English
+Classifier: Operating System :: OS Independent (Written in an interpreted language)
+Classifier: Programming Language :: Python :: 2
+Classifier: Topic :: Software Development :: Code Generators
+Classifier: User Interface :: Textual :: Command-line
+Classifier: User Interface :: Toolkits/Libraries :: wxWidgets
