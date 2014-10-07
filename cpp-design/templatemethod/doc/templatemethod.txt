@@ -16,6 +16,14 @@ ConcreteClass，实现父类所定义的一个或多个抽象方法。每一个A
 
 当不变的和可变的行为在方法的子类实现中混合在一起的时候，不变的行为就会在子类中重复出现。通过模板方法模式把这些行为搬移到单一的地方，这样就帮助子类摆脱重复的不变行为的纠缠。
 
+定义了一个模板方法，其中定义了算法的骨架。
+具体子类将重定义PrimitiveOperation方法以
+实现一个算法的步骤。
+
+实现PrimitiveOperation
+以完成算法中与待定子类
+相关的步骤
+
 #ifndef _TEMPLATEMETHOD_H_
 #define _TEMPLATEMETHOD_H_
 
