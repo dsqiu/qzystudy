@@ -3,11 +3,11 @@
 /**
  * @file 顺序链表访问。
  *
- * @code{.cpp}
- * #include <iostream>
- * #include <seqlist.h>
- * using namespace std;
- * SeqList<int> test(15);
+ * @code
+   #include <iostream>
+   #include <seqlist.h>
+   using namespace std;
+   SeqList<int> test(15);
  * @endcode
  *
  */
